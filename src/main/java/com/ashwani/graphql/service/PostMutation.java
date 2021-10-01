@@ -3,9 +3,10 @@ package com.ashwani.graphql.service;
 import com.ashwani.graphql.entity.Post;
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-@Component
+@Configuration
 public class PostMutation implements GraphQLMutationResolver {
     @Autowired
     private PostService postService;
