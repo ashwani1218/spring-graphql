@@ -1,1 +1,1 @@
-# spring-graphql-example
+# Spring Graphql Example
