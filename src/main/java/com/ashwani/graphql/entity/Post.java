@@ -1,35 +1,9 @@
 package com.ashwani.graphql.entity;
 
-import lombok.*;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.annotation.Id;
 
-@Entity
-@Data
-@EqualsAndHashCode
-@AllArgsConstructor
-@Builder
-@NoArgsConstructor
-public class Post implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(
-            name = "title"
-    )
-    private String title;
-
-    @Column(
-            name = "category"
-    )
-    private String category;
-
-    @Column(
-            name = "authorId"
-    )
-    private String authorId;
-
+public record Post(@JsonProperty("id")@Id Long id, @JsonProperty("title") String title
+        , @JsonProperty("category") String category, @JsonProperty("authorId") String authorId) {
 }
