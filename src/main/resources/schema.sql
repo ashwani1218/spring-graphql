@@ -1,1 +1,1 @@
-create TABLE Post(id serial primary key, title varchar(255) not null, category varchar(255) not null, authorId number);
+create TABLE Post(id serial primary key, title varchar(255) not null, category varchar(255) not null, author_id varchar(255));

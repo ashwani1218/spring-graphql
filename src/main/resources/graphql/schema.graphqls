@@ -10,5 +10,19 @@ type Post{
 }
 
 type Mutation {
-    createVehicle( title: String!, category: String, authorId: String) : Post
+    createPost( title: String!, category: String, authorId: String) : Post
+}
+
+type Subscription{
+    postEvents(postId: ID): PostEvent
+}
+
+type PostEvent{
+    post: Post
+    event : PostEventType
+}
+
+enum PostEventType {
+    UPDATED
+    DELETED
 }

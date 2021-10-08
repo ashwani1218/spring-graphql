@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>GraphQL over WebSocket</title>
+    <script type="text/javascript" src="https://unpkg.com/graphql-ws/umd/graphql-ws.js"></script>
+
+    <script>
+
+        // just copy and paste this
+        class Graphql {
+
+            constructor(url) {
+                this.client = graphqlWs.createClient({url: url})
+            }
+
+            subscribe(q, callback) {
+                this.client.subscribe(
+                    {query: q},
+                    {
+                        next: callback,
+                        error: (err) => console.error('there is an error', err),
+                        complete: () => console.log('subscription is complete.'),
+                    },
+                );
+
+            }
+
+            async query(queryString) {
+                return await new Promise((resolve, reject) => {
+                    let result;
+                    this.client.subscribe(
+                        {
+                            query: queryString,
+                        },
+                        {
+                            next: (data) => (result = data),
+                            error: reject,
+                            complete: () => resolve(result),
+                        },
+                    );
+                })
+
+            }
+
+
+        }
+
+        class Crm {
+
+            constructor() {
+                this.client = new Graphql('ws://localhost:8080/graphql')
+            }
+
+            async readPosts() {
+                const q = `
+                 { posts { id, title } }
+                `
+                return (await this.client.query(q)) ['data']['posts']
+            }
+
+            async createPost(title, category, authorId) {
+                const q = `
+                    mutation {
+                      createPost(title : "${title}",category: "${category}", authorId: "${authorId}" ) {
+                          id,
+                          title,
+                          category,
+                          authorId
+                      }
+                    }
+                `
+                return (await this.client.query(q))['data']['addPost']
+            }
+
+            subscribeToPostUpdates(postId, callback) {
+                const q = `
+                subscription {
+                    postEvents( postId : ${postId} ) {
+                        post { id, title, category, authorId }
+                        event
+                    }
+                }
+                `
+                this.client.subscribe(q, (next) => {
+                    const result = next ['data']['postEvents']
+                    callback(result)
+                });
+            }
+        }
+
+        window.addEventListener('load', async () => {
+            const crm = new Crm()
+            await crm.subscribeToPostUpdates(2, (event) => {
+                console.log(event.post.id + ' = '
+                    + event.post.title + ' ' + event.event + ' @ ' + new Date())
+            })
+            await crm.createPost('Bob','Humor', '7')
+            const posts = await crm.readPosts()
+            console.log('post: ', posts)
+        })
+
+    </script>
+</head>
+<body>
+</body>
+</html>
