@@ -7,6 +7,12 @@ This repository contains example for implementing graphql with spring boot.
 ```
 http://localhost:8080/graphiql
 ```
+#### Web-socket implementation for subscription
+
+Launch the application and open dev tools.
+```
+http://localhost:8080/index.html
+``` 
 
 ### Available Scripts
 
@@ -24,4 +30,6 @@ OR
 
 $ java -jar graphql-0.0.1-SNAPSHOT
 ```
+
+
 
